@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types'
 import { dateReadParser } from '../../utils/dateParser'
 DetailsSection.propTypes = {
-    onClose: PropTypes.func.isRequired
+    onClose: PropTypes.func.isRequired,
+    user: PropTypes.object.isRequired
 }
 export default function DetailsSection({ onClose, user }) {
     const address = Object.values(user.address).join(', ')

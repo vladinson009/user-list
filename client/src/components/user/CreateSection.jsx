@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import userApi from '../../api/user'
 import { dateWriteParser } from '../../utils/dateParser'
-export default function CreateSection({ onClose, user, onType, set, pagination }) {
+export default function CreateSection({ onClose, user, onType, set }) {
     async function onUpdate(e) {
         e.preventDefault()
         const date = dateWriteParser(new Date())

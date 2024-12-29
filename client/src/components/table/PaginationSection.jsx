@@ -12,13 +12,20 @@ export default function PaginationSection({ users, pagination, currentPage }) {
         setPages(Math.ceil(size / Number(pagination.pagination)))
     }, [pagination.pagination, size])
 
-
-
     function onPagination(e) {
         pagination.setPagination(Number(e.target.value))
     }
     function onFirstPage() {
         currentPage.setCurrentPage(0);
+    }
+    function onLastPage() {
+        currentPage.setCurrentPage(pages - 1)
+    }
+    function onNextPage() {
+        currentPage.setCurrentPage((prev) => prev + 1)
+    }
+    function onPrevPage() {
+        currentPage.setCurrentPage((prev) => prev - 1)
     }
     return (<div className="pagination position">
         <div className="limits">
@@ -55,7 +62,7 @@ export default function PaginationSection({ users, pagination, currentPage }) {
                 </svg>
             </button>}
 
-            {currentPage.currentPage + 1 != 1 && <button className="btn" title="Previous Page">
+            {currentPage.currentPage + 1 != 1 && <button onClick={onPrevPage} className="btn" title="Previous Page">
                 <svg
                     aria-hidden="true"
                     focusable="false"
@@ -72,7 +79,7 @@ export default function PaginationSection({ users, pagination, currentPage }) {
                     ></path>
                 </svg>
             </button>}
-            {currentPage.currentPage + 1 != pages && <button className="btn" title="Next Page">
+            {currentPage.currentPage + 1 != pages && <button onClick={onNextPage} className="btn" title="Next Page">
                 <svg
                     aria-hidden="true"
                     focusable="false"
@@ -90,7 +97,7 @@ export default function PaginationSection({ users, pagination, currentPage }) {
                 </svg>
             </button>}
 
-            {currentPage.currentPage + 1 != pages && <button className="btn" title="Last Page">
+            {currentPage.currentPage + 1 != pages && <button onClick={onLastPage} className="btn" title="Last Page">
                 <svg
                     aria-hidden="true"
                     focusable="false"

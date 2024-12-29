@@ -12,6 +12,14 @@ import DeleteSection from "../user/DeleteSection";
 import DetailsSection from "../user/DetailsSection";
 
 export default function TableSection() {
+    const [sortOrder, setSortOrder] = useState('ascending');
+    const [isActive, setIsActive] = useState({
+        firstName: false,
+        lastName: false,
+        email: false,
+        phoneNumber: false,
+        createdAt: true
+    })
     const [currentPage, setCurrentPage] = useState(0);
     const [pagination, setPagination] = useState(5)
     const [users, setUsers] = useState([]);
@@ -44,7 +52,7 @@ export default function TableSection() {
             try {
                 const data = await user.getUsers();
                 const result = Object.values(data)
-                console.log(result);
+
 
                 setUsers(result);
             } catch (err) {
@@ -114,7 +122,38 @@ export default function TableSection() {
             throw setError(true)
         }
     }
-
+    function onSorting(e) {
+        const target = e.currentTarget;
+        let criteria = ''
+        if (target.textContent == 'First name') {
+            criteria = 'firstName'
+        } else if (target.textContent == 'Last name') {
+            criteria = 'lastName'
+        } else if (target.textContent == 'Email') {
+            criteria = 'email'
+        } else if (target.textContent == 'Phone') {
+            criteria = 'phoneNumber'
+        } else if (target.textContent == 'Created') {
+            criteria = 'createdAt'
+        }
+        setUsers((prev) => [...prev.sort((a, b) => {
+            if (sortOrder == 'ascending') {
+                setSortOrder('descending')
+                return b[criteria].localeCompare(a[criteria]) || b[criteria] - a[criteria]
+            } else {
+                setSortOrder('ascending')
+                return a[criteria].localeCompare(b[criteria]) || a[criteria] - b[criteria]
+            }
+        })])
+        setIsActive(prev => Object.keys(prev).reduce((acc, key) => {
+            if (key == criteria) {
+                acc[key] = true
+            } else {
+                acc[key] = false;
+            }
+            return acc
+        }, {}))
+    }
     return (
         <section className="card users-container">
             <SearchSection filter={filterByCriteria} />
@@ -125,14 +164,14 @@ export default function TableSection() {
                         <table className="table">
                             <thead>
                                 <tr>
-                                    <th>Image</th>
-                                    <th>
+                                    <th >Image</th>
+                                    <th onClick={onSorting}>
                                         First name<svg
                                             aria-hidden="true"
                                             focusable="false"
                                             data-prefix="fas"
                                             data-icon="arrow-down"
-                                            className="icon svg-inline--fa fa-arrow-down Table_icon__+HHgn"
+                                            className={`icon svg-inline--fa fa-arrow-down Table_icon__+HHgn ${isActive.firstName ? 'active-icon' : ''}`}
                                             role="img"
                                             xmlns="http://www.w3.org/2000/svg"
                                             viewBox="0 0 384 512"
@@ -143,13 +182,13 @@ export default function TableSection() {
                                             ></path>
                                         </svg>
                                     </th>
-                                    <th>
+                                    <th onClick={onSorting}>
                                         Last name<svg
                                             aria-hidden="true"
                                             focusable="false"
                                             data-prefix="fas"
                                             data-icon="arrow-down"
-                                            className="icon svg-inline--fa fa-arrow-down Table_icon__+HHgn"
+                                            className={`icon svg-inline--fa fa-arrow-down Table_icon__+HHgn ${isActive.lastName ? 'active-icon' : ''}`}
                                             role="img"
                                             xmlns="http://www.w3.org/2000/svg"
                                             viewBox="0 0 384 512"
@@ -160,13 +199,13 @@ export default function TableSection() {
                                             ></path>
                                         </svg>
                                     </th>
-                                    <th>
+                                    <th onClick={onSorting}>
                                         Email<svg
                                             aria-hidden="true"
                                             focusable="false"
                                             data-prefix="fas"
                                             data-icon="arrow-down"
-                                            className="icon svg-inline--fa fa-arrow-down Table_icon__+HHgn"
+                                            className={`icon svg-inline--fa fa-arrow-down Table_icon__+HHgn ${isActive.email ? 'active-icon' : ''}`}
                                             role="img"
                                             xmlns="http://www.w3.org/2000/svg"
                                             viewBox="0 0 384 512"
@@ -177,13 +216,13 @@ export default function TableSection() {
                                             ></path>
                                         </svg>
                                     </th>
-                                    <th>
+                                    <th onClick={onSorting}>
                                         Phone<svg
                                             aria-hidden="true"
                                             focusable="false"
                                             data-prefix="fas"
                                             data-icon="arrow-down"
-                                            className="icon svg-inline--fa fa-arrow-down Table_icon__+HHgn"
+                                            className={`icon svg-inline--fa fa-arrow-down Table_icon__+HHgn ${isActive.phoneNumber ? 'active-icon' : ''}`}
                                             role="img"
                                             xmlns="http://www.w3.org/2000/svg"
                                             viewBox="0 0 384 512"
@@ -194,14 +233,14 @@ export default function TableSection() {
                                             ></path>
                                         </svg>
                                     </th>
-                                    <th>
+                                    <th onClick={onSorting}>
                                         Created
                                         <svg
                                             aria-hidden="true"
                                             focusable="false"
                                             data-prefix="fas"
                                             data-icon="arrow-down"
-                                            className="icon active-icon svg-inline--fa fa-arrow-down Table_icon__+HHgn"
+                                            className={`icon svg-inline--fa fa-arrow-down Table_icon__+HHgn ${isActive.createdAt ? 'active-icon' : ''}`}
                                             role="img"
                                             xmlns="http://www.w3.org/2000/svg"
                                             viewBox="0 0 384 512"

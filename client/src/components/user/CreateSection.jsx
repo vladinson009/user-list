@@ -1,25 +1,25 @@
 /* eslint-disable react/prop-types */
-
 import userApi from '../../api/user'
 import { dateWriteParser } from '../../utils/dateParser'
-
 export default function CreateSection({ onClose, user, onType, set }) {
-
     async function onUpdate(e) {
         e.preventDefault()
         const date = dateWriteParser(new Date())
         try {
             set.setLoading(true);
-            const data = await userApi.updateOrCreateUser(user, user._id, date)
+            const data = await userApi.updateOrCreateUser(user, date, user?._id,)
             set.setUsers((prev) => {
                 const newData = [...prev];
                 const idx = newData.findIndex((el) => el._id == data._id);
                 if (idx != -1) {
                     newData.splice(idx, 1, data);
+                    return newData
+                } else {
+                    newData.push(data)
+                    return newData
                 }
-                return newData
             })
-            set.closeModals()
+            onClose()
             set.setLoading(false);
         } catch (error) {
             console.log(error);
@@ -91,14 +91,14 @@ export default function CreateSection({ onClose, user, onType, set }) {
                                 <label htmlFor="country">Country</label>
                                 <div className="input-wrapper">
                                     <span><i className="fa-solid fa-map"></i></span>
-                                    <input value={user.address.country} onChange={onType} id="country" name="country" type="text" />
+                                    <input value={user.address?.country} onChange={onType} id="country" name="country" type="text" />
                                 </div>
                             </div>
                             <div className="form-group">
                                 <label htmlFor="city">City</label>
                                 <div className="input-wrapper">
                                     <span><i className="fa-solid fa-city"></i></span>
-                                    <input value={user.address.city} onChange={onType} id="city" name="city" type="text" />
+                                    <input value={user.address?.city} onChange={onType} id="city" name="city" type="text" />
                                 </div>
                             </div>
                         </div>
@@ -108,14 +108,14 @@ export default function CreateSection({ onClose, user, onType, set }) {
                                 <label htmlFor="street">Street</label>
                                 <div className="input-wrapper">
                                     <span><i className="fa-solid fa-map"></i></span>
-                                    <input value={user.address.street} onChange={onType} id="street" name="street" type="text" />
+                                    <input value={user.address?.street} onChange={onType} id="street" name="street" type="text" />
                                 </div>
                             </div>
                             <div className="form-group">
                                 <label htmlFor="streetNumber">Street number</label>
                                 <div className="input-wrapper">
                                     <span><i className="fa-solid fa-house-chimney"></i></span>
-                                    <input value={user.address.streetNumber} onChange={onType} id="streetNumber" name="streetNumber" type="text" />
+                                    <input value={user.address?.streetNumber} onChange={onType} id="streetNumber" name="streetNumber" type="text" />
                                 </div>
                             </div>
                         </div>
@@ -130,5 +130,4 @@ export default function CreateSection({ onClose, user, onType, set }) {
             </div>
         </div>
     )
-
 }

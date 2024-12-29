@@ -1,4 +1,29 @@
-export default function SearchSection() {
+/* eslint-disable react/prop-types */
+import { useState } from "react"
+
+export default function SearchSection({ filter }) {
+    const [crit, setCrit] = useState('');
+    const [input, setInput] = useState('');
+
+    function onChange(e) {
+        setCrit(e.target.value)
+
+    }
+    function onInputChange(e) {
+        setInput(e.target.value)
+
+    }
+    async function onSend(e) {
+        e.preventDefault();
+        await filter(crit, input)
+
+
+    }
+    function onClear(e) {
+        e.preventDefault();
+        setInput('');
+        setCrit('');
+    }
 
     return (
         <form className="search-form">
@@ -21,25 +46,24 @@ export default function SearchSection() {
                 <span>Users</span>
             </h2>
             <div className="search-input-container">
-                <input type="text" placeholder="Please, select the search criteria" name="search" />
-                {/* <!-- Show the clear button only if input field length !== 0 --> */}
-                <button className="btn close-btn">
-                    <i className="fa-solid fa-xmark"></i>
-                </button>
+                <input value={input} onChange={onInputChange} type="text" placeholder="Please, select the search criteria" name="search" />
 
-                <button className="btn" title="Please, select the search criteria">
+                <button onClick={onSend} className="btn" title="Please, select the search criteria">
                     <i className="fa-solid fa-magnifying-glass"></i>
                 </button>
+                {input.length !== 0 && <button onClick={onClear} className="btn close-btn">
+                    <i className="fa-solid fa-xmark"></i>
+                </button>}
             </div>
 
             <div className="filter">
                 <span>Search Criteria:</span>
-                <select name="criteria" className="criteria">
+                <select name="criteria" className="criteria" value={crit} onChange={onChange}>
                     <option value="">Not selected</option>
-                    <option value="">First Name</option>
-                    <option value="">Last Name</option>
-                    <option value="">Email</option>
-                    <option value="">Phone</option>
+                    <option value="firstName">First Name</option>
+                    <option value="lastName">Last Name</option>
+                    <option value="email">Email</option>
+                    <option value="phoneNumber">Phone</option>
                 </select>
             </div>
         </form>

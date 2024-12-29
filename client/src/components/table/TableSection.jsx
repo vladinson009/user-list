@@ -20,7 +20,22 @@ export default function TableSection() {
         edit: false,
         delete: false,
         info: false,
-        user: { firstName: '' }
+        create: false,
+        user: {
+            firstName: '',
+            lastName: '',
+            email: '',
+            phoneNumber: '',
+            createdAt: '',
+            updatedAt: '',
+            imageUrl: '',
+            address: {
+                country: '',
+                city: '',
+                street: '',
+                streetNumber: '',
+            }
+        }
     })
     useEffect(() => {
         (async function () {
@@ -38,8 +53,12 @@ export default function TableSection() {
     }, [])
 
     function onModals(method, userId) {
-        const user = users.find(el => el._id == userId)
-        setModals((prev) => ({ ...prev, [method]: true, user }))
+        if (userId) {
+            const user = users.find(el => el._id == userId)
+            setModals((prev) => ({ ...prev, [method]: true, user }))
+        } else {
+            setModals((prev) => ({ ...prev, [method]: true }))
+        }
 
     }
     function closeModals() {
@@ -73,6 +92,7 @@ export default function TableSection() {
         })
 
     }
+
     return (
         <section className="card users-container">
             <SearchSection />
@@ -177,11 +197,12 @@ export default function TableSection() {
                                 <TableRow users={users} onModals={onModals} />
                             </tbody>
                         </table>
-                        {modals.edit && <CreateSection set={{ setError, setLoading, setUsers, closeModals }} user={modals.user} onClose={closeModals} onType={onType} />}
-                        {modals.delete && <DeleteSection onClose={closeModals} />}
-                        {modals.info && <DetailsSection onClose={closeModals} />}
+                        {modals.edit && <CreateSection set={{ setError, setLoading, setUsers }} user={modals.user} onClose={closeModals} onType={onType} />}
+                        {modals.delete && <DeleteSection onClose={closeModals} userId={modals.user._id} set={{ setError, setLoading, setUsers }} />}
+                        {modals.info && <DetailsSection onClose={closeModals} user={modals.user} />}
+                        {modals.create && <CreateSection set={{ setError, setLoading, setUsers }} user={modals.user} onClose={closeModals} onType={onType} />}
                     </div>}
-            <button className="btn-add btn">Add new user</button>
+            <button onClick={() => onModals('create')} className="btn-add btn">Add new user</button>
             <PaginationSection />
         </section>
     )

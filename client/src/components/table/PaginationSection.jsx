@@ -1,18 +1,43 @@
-export default function PaginationSection() {
+/* eslint-disable react/prop-types */
+import { useEffect, useState } from "react";
+export default function PaginationSection({ users, pagination, currentPage }) {
+    const [size, setSize] = useState(0)
+    const [pages, setPages] = useState(0)
 
+    useEffect(() => {
+        setSize(users.length)
+    }, [users])
+
+    useEffect(() => {
+        setPages(Math.ceil(size / Number(pagination.pagination)))
+    }, [pagination.pagination, size])
+
+
+
+    function onPagination(e) {
+        pagination.setPagination(Number(e.target.value))
+    }
+    function onFirstPage() {
+        currentPage.setCurrentPage(0);
+    }
     return (<div className="pagination position">
         <div className="limits">
             <span>Items per page:</span>
-            <select name="limit" className="limit" defaultValue="5">
+            <select name="limit"
+                className="limit"
+                value={pagination.pagination}
+                onChange={onPagination}
+            >
                 <option value="5">5</option>
-                <option value="5">10</option>
-                <option value="5">15</option>
-                <option value="5">20</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
             </select>
         </div>
-        <p className="pages">1 - 1 of 1</p>
+        <p className="pages">{size} - {currentPage.currentPage + 1} of {pages}</p>
         <div className="actions">
-            <button className="btn" title="First Page">
+            {currentPage.currentPage + 1 != 1 && <button className="btn" title="First Page"
+                onClick={onFirstPage}>
                 <svg
                     aria-hidden="true"
                     focusable="false"
@@ -28,9 +53,9 @@ export default function PaginationSection() {
                         d="M77.25 256l137.4-137.4c12.5-12.5 12.5-32.75 0-45.25s-32.75-12.5-45.25 0l-160 160c-12.5 12.5-12.5 32.75 0 45.25l160 160C175.6 444.9 183.8 448 192 448s16.38-3.125 22.62-9.375c12.5-12.5 12.5-32.75 0-45.25L77.25 256zM269.3 256l137.4-137.4c12.5-12.5 12.5-32.75 0-45.25s-32.75-12.5-45.25 0l-160 160c-12.5 12.5-12.5 32.75 0 45.25l160 160C367.6 444.9 375.8 448 384 448s16.38-3.125 22.62-9.375c12.5-12.5 12.5-32.75 0-45.25L269.3 256z"
                     ></path>
                 </svg>
-            </button>
+            </button>}
 
-            <button className="btn" title="Previous Page">
+            {currentPage.currentPage + 1 != 1 && <button className="btn" title="Previous Page">
                 <svg
                     aria-hidden="true"
                     focusable="false"
@@ -46,8 +71,8 @@ export default function PaginationSection() {
                         d="M192 448c-8.188 0-16.38-3.125-22.62-9.375l-160-160c-12.5-12.5-12.5-32.75 0-45.25l160-160c12.5-12.5 32.75-12.5 45.25 0s12.5 32.75 0 45.25L77.25 256l137.4 137.4c12.5 12.5 12.5 32.75 0 45.25C208.4 444.9 200.2 448 192 448z"
                     ></path>
                 </svg>
-            </button>
-            <button className="btn" title="Next Page">
+            </button>}
+            {currentPage.currentPage + 1 != pages && <button className="btn" title="Next Page">
                 <svg
                     aria-hidden="true"
                     focusable="false"
@@ -63,9 +88,9 @@ export default function PaginationSection() {
                         d="M64 448c-8.188 0-16.38-3.125-22.62-9.375c-12.5-12.5-12.5-32.75 0-45.25L178.8 256L41.38 118.6c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0l160 160c12.5 12.5 12.5 32.75 0 45.25l-160 160C80.38 444.9 72.19 448 64 448z"
                     ></path>
                 </svg>
-            </button>
+            </button>}
 
-            <button className="btn" title="Last Page">
+            {currentPage.currentPage + 1 != pages && <button className="btn" title="Last Page">
                 <svg
                     aria-hidden="true"
                     focusable="false"
@@ -81,7 +106,7 @@ export default function PaginationSection() {
                         d="M246.6 233.4l-160-160c-12.5-12.5-32.75-12.5-45.25 0s-12.5 32.75 0 45.25L178.8 256l-137.4 137.4c-12.5 12.5-12.5 32.75 0 45.25C47.63 444.9 55.81 448 64 448s16.38-3.125 22.62-9.375l160-160C259.1 266.1 259.1 245.9 246.6 233.4zM438.6 233.4l-160-160c-12.5-12.5-32.75-12.5-45.25 0s-12.5 32.75 0 45.25L370.8 256l-137.4 137.4c-12.5 12.5-12.5 32.75 0 45.25C239.6 444.9 247.8 448 256 448s16.38-3.125 22.62-9.375l160-160C451.1 266.1 451.1 245.9 438.6 233.4z"
                     ></path>
                 </svg>
-            </button>
+            </button>}
         </div>
     </div>)
 }

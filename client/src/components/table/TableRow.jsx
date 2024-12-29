@@ -2,9 +2,9 @@ import { dateReadParser } from "../../utils/dateParser";
 
 
 
-export default function TableRow({ users, onModals }) {
+export default function TableRow({ users, onModals, pagination, currentPage }) {
 
-    return users.map((el) => <tr key={el._id}>
+    return users.slice(currentPage, pagination).map((el) => <tr key={el._id}>
         <td>
             <img
                 src={el.imageUrl}

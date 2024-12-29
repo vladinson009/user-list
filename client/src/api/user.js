@@ -16,4 +16,8 @@ function updateOrCreateUser(data, newDate, id) {
 function deleteUser(id) {
   return api.del('/users/' + id);
 }
-export default { getUsers, updateOrCreateUser, deleteUser };
+function searchUsers(criteria, value) {
+  const query = encodeURIComponent(`${criteria} LIKE "${value}"`);
+  return api.get(`/users?where=${query}`);
+}
+export default { getUsers, updateOrCreateUser, deleteUser, searchUsers };

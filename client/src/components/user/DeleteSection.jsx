@@ -1,9 +1,29 @@
+/* eslint-disable react/prop-types */
+import userApi from '../../api/user'
+
 import PropTypes from 'prop-types'
+import NoContent from '../table/NoContent';
 DeleteSection.propTypes = {
     onClose: PropTypes.func.isRequired
 }
-export default function DeleteSection({ onClose }) {
+export default function DeleteSection({ onClose, userId, set }) {
+    async function onDelete() {
+        try {
+            set.setLoading(true)
+            const user = await userApi.deleteUser(userId);
+            set.setUsers((prev) => {
+                return prev.filter(el => el._id != user._id)
+            })
+            onClose()
+        } catch (error) {
+            console.log(error);
+            set.setError(true)
+            return <NoContent />
+        } finally {
+            set.setLoading(false)
 
+        }
+    }
     return (
         <div className="overlay">
             <div onClick={onClose} className="backdrop"></div>
@@ -22,7 +42,7 @@ export default function DeleteSection({ onClose }) {
                     </header>
                     <div className="actions">
                         <div id="form-actions">
-                            <button id="action-save" className="btn" type="submit">Delete</button>
+                            <button onClick={onDelete} id="action-save" className="btn" type="submit">Delete</button>
                             <button onClick={onClose} id="action-cancel" className="btn" type="button">
                                 Cancel
                             </button>

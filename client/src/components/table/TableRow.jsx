@@ -16,7 +16,7 @@ export default function TableRow({ users, onModals }) {
         <td>{el.lastName}</td>
         <td>{el.email}</td>
         <td>{el.phoneNumber}</td>
-        <td>{dateReadParser(el.updatedAt)}</td>
+        <td>{dateReadParser(el.createdAt)}</td>
 
         <td className="actions">
             <button onClick={() => onModals('edit', el._id)} className="btn edit-btn" title="Edit">

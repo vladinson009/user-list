@@ -12,10 +12,11 @@ import DeleteSection from "../user/DeleteSection";
 import DetailsSection from "../user/DetailsSection";
 
 export default function TableSection() {
+    const [currentPage, setCurrentPage] = useState(0);
+    const [pagination, setPagination] = useState(5)
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
     const [modals, setModals] = useState({
         edit: false,
         delete: false,
@@ -42,7 +43,10 @@ export default function TableSection() {
             setLoading(true);
             try {
                 const data = await user.getUsers();
-                setUsers(Object.values(data));
+                const result = Object.values(data)
+                console.log(result);
+
+                setUsers(result);
             } catch (err) {
                 console.log(err);
                 throw setError(true)
@@ -92,10 +96,28 @@ export default function TableSection() {
         })
 
     }
+    async function filterByCriteria(criteria, value) {
+        try {
+            const data = await user.searchUsers(criteria, value);
+            if (criteria && value) {
+                const result = Object.values(data).filter(el => el[criteria].toLowerCase().includes(value.toLowerCase()))
+                setUsers(result);
+
+            } else {
+                const result = Object.values(data).filter(el => (Object.values(el)))
+                setUsers(result);
+            }
+
+
+        } catch (err) {
+            console.log(err);
+            throw setError(true)
+        }
+    }
 
     return (
         <section className="card users-container">
-            <SearchSection />
+            <SearchSection filter={filterByCriteria} />
             {loading ? <Spinner /> :
                 error ? <ErrorFetch /> : users.length == 0 ? <NoUsers /> :
                     <div className="table-wrapper">
@@ -194,16 +216,16 @@ export default function TableSection() {
                                 </tr>
                             </thead>
                             <tbody>
-                                <TableRow users={users} onModals={onModals} />
+                                <TableRow users={users} onModals={onModals} pagination={pagination} currentPage={currentPage} />
                             </tbody>
                         </table>
-                        {modals.edit && <CreateSection set={{ setError, setLoading, setUsers }} user={modals.user} onClose={closeModals} onType={onType} />}
-                        {modals.delete && <DeleteSection onClose={closeModals} userId={modals.user._id} set={{ setError, setLoading, setUsers }} />}
+                        {modals.edit && <CreateSection pagination={pagination} set={{ setError, setLoading, setUsers }} user={modals.user} onClose={closeModals} onType={onType} />}
+                        {modals.delete && <DeleteSection pagination={pagination} onClose={closeModals} userId={modals.user._id} set={{ setError, setLoading, setUsers }} />}
                         {modals.info && <DetailsSection onClose={closeModals} user={modals.user} />}
-                        {modals.create && <CreateSection set={{ setError, setLoading, setUsers }} user={modals.user} onClose={closeModals} onType={onType} />}
+                        {modals.create && <CreateSection pagination={pagination} set={{ setError, setLoading, setUsers }} user={modals.user} onClose={closeModals} onType={onType} />}
                     </div>}
             <button onClick={() => onModals('create')} className="btn-add btn">Add new user</button>
-            <PaginationSection />
+            <PaginationSection users={users} pagination={{ pagination, setPagination }} currentPage={{ currentPage, setCurrentPage }} />
         </section>
     )
 }
